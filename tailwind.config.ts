@@ -19,6 +19,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--inter)', ...defaultTheme.fontFamily.sans],
+        arkham: ['var(--arkham)', ...defaultTheme.fontFamily.sans],
       },
     },
   },
