@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useContext } from 'react';
-import Card from './Card';
+import React, { useContext, useState } from 'react';
 import Image from 'next/image';
 import PlayContext from '@/contexts/PlayContext';
+import Section from './Section';
+import SetupPhase from './SetupPhase';
 
 const Play = () => {
   const {
@@ -20,10 +21,19 @@ const Play = () => {
     inSearch,
     playCard,
     discardCard,
-    getCardFromDiscard,
-    getCardFromSearch,
+    visibleSections,
+    toggleSection,
     search,
     clearSearch,
+    exileCard,
+    shuffleBack,
+    shuffleCardIntoDeck,
+    getCard,
+    setExtraName,
+    shuffle,
+    moveCardInto,
+    setTiming,
+    timing,
   } = useContext(PlayContext);
 
   if (!baseDeck) {
@@ -32,6 +42,21 @@ const Play = () => {
 
   if (!currentDeck || !resources) {
     return <div>Loading...</div>;
+  }
+
+  if (timing === 'setup') {
+    return (
+      <SetupPhase
+        baseDeck={baseDeck}
+        deckName={deckName || ''}
+        resources={resources}
+        setResources={setResources}
+        drawCard={drawCard}
+        suffleCardIntoDeck={shuffleCardIntoDeck}
+        setTiming={setTiming}
+        cards={hand || []}
+      />
+    );
   }
 
   return (
@@ -45,13 +70,6 @@ const Play = () => {
       />
       <h1>{deckName}</h1>
       <h2>{baseDeck.investigator.name}</h2>
-      <ul>
-        {baseDeck.cards.map((cardItem) => (
-          <li key={cardItem.card.code}>
-            <Card card={cardItem.card} className="pr-2" />x {cardItem.count}
-          </li>
-        ))}
-      </ul>
       <p>
         Ressources: {resources}{' '}
         <button
@@ -66,93 +84,69 @@ const Play = () => {
         >
           +
         </button>
-        <button className="inline px-2 text-xl" onClick={drawCard}>
+        <button
+          className="inline px-2 text-xl"
+          onClick={() => drawCard('deck')}
+        >
           Draw
         </button>
         <button className="inline px-2 text-xl" onClick={() => search(1)}>
           Search
         </button>
       </p>
-      <section>
-        <h2>Hand</h2>
-        <ul>
-          {hand?.map((card, index) => (
-            <li key={card.name}>
-              <Card card={card} className="pr-2" />
-              <span
-                className="inline px-2 text-xl"
-                onClick={() => playCard(index, 'hand')}
-              >
-                Play
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <h2>In play</h2>
-        <ul>
-          {inPlay?.map((card, index) => (
-            <li key={card.name}>
-              <Card card={card} className="pr-2" />
-              <span
-                className="inline px-2 text-xl"
-                onClick={() => discardCard(index, 'play')}
-              >
-                Discard
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <h2>Discard</h2>
-        <ul>
-          {discard?.map((card, index) => (
-            <li key={card.name}>
-              <Card card={card} className="pr-2" />
-              <span
-                className="inline px-2 text-xl"
-                onClick={() => getCardFromDiscard(index)}
-              >
-                Draw
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <h2>Exiled</h2>
-        <ul>
-          {exiled?.map((card, index) => (
-            <li key={card.name}>
-              <Card card={card} className="pr-2" />
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <h2>Search</h2>
-        <ul>
-          {inSearch?.map((card, index) => (
-            <li key={card.name}>
-              <Card card={card} className="pr-2" />
-              <span
-                className="inline px-2 text-xl"
-                onClick={() => getCardFromSearch(index)}
-              >
-                Draw
-              </span>
-            </li>
-          ))}
-        </ul>
-        <button
-          className="inline px-2 text-xl"
-          onClick={() => clearSearch('shuffle')}
-        >
-          Clear
-        </button>
-      </section>
+      <div className="flex justify-between px-4">
+        {visibleSections?.hand && hand && (
+          <Section
+            title="Hand"
+            cards={hand}
+            playCard={playCard}
+            discardCard={discardCard}
+            location="hand"
+            playable
+            discardable
+          />
+        )}
+        {visibleSections?.play && inPlay && (
+          <Section
+            title="In Play"
+            cards={inPlay}
+            playCard={playCard}
+            discardCard={discardCard}
+            location="play"
+            discardable
+          />
+        )}
+        {visibleSections?.discard && discard && (
+          <Section
+            title="Discard"
+            cards={discard}
+            playCard={playCard}
+            discardCard={discardCard}
+            location="discard"
+            playable
+          />
+        )}
+        {visibleSections?.exiled && exiled && (
+          <Section
+            title="Exiled"
+            cards={exiled}
+            playCard={playCard}
+            discardCard={discardCard}
+            location="exiled"
+          />
+        )}
+        {visibleSections?.search && inSearch && (
+          <Section
+            title="Search"
+            cards={inSearch}
+            playCard={playCard}
+            discardCard={discardCard}
+            location="search"
+            playable
+            discardable
+          />
+        )}
+      </div>
     </div>
   );
 };

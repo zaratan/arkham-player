@@ -22,8 +22,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <NeededCssClasses />
       <body className={`${inter.variable} ${arkhamFont.variable} font-sans`}>
+        <NeededCssClasses />
         {children}
       </body>
     </html>
