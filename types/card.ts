@@ -34,7 +34,23 @@ export interface Card {
     };
   };
   imagesrc?: string;
+  customization_text?: string;
+  customization_change?: string;
+  customization_options?: Array<customization>;
 }
+
+export type customization = {
+  xp: number;
+  real_traits?: string;
+  real_slot?: string;
+  text_change?: 'trait' | 'append' | 'insert';
+  cost?: number;
+  health?: number;
+  sanity?: number;
+  position?: number;
+};
+
+export type digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export interface AssetCard extends Card {
   type_code: 'asset';
@@ -46,6 +62,8 @@ export interface AssetCard extends Card {
   skill_wild?: number;
   slot?: string;
   xp: number;
+  health?: digit;
+  sanity?: digit;
 }
 
 export interface EventCard extends Card {

@@ -100,6 +100,59 @@ const replaceIconsInText = (text: string) => {
   return result;
 };
 
+const INT_TO_ARKHAM = {
+  0: '',
+  1: '',
+  2: '',
+  3: '',
+  4: '',
+  5: '',
+  6: '',
+  7: '',
+  8: '',
+  9: '',
+  none: '',
+};
+
+const ARKHAM_ICONS = {
+  health: '',
+  sanity: '',
+};
+
+const HealthIcon = ({
+  health,
+}: {
+  health: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | undefined;
+}) => {
+  return (
+    <span className="relative h-10 w-10 flex items-center justify-center">
+      <span className="font-card text-red-500 text-4xl absolute">
+        {ARKHAM_ICONS.health}
+      </span>
+      <span className="font-card text-white text-3xl absolute fill-white">
+        {INT_TO_ARKHAM[health || 'none'] || health}
+      </span>
+    </span>
+  );
+};
+
+const SanityIcon = ({
+  sanity,
+}: {
+  sanity: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | undefined;
+}) => {
+  return (
+    <span className="relative h-10 w-10 flex text-center justify-center items-center">
+      <span className="font-card text-blue-500 text-4xl absolute z-0">
+        {ARKHAM_ICONS.sanity}
+      </span>
+      <span className="font-card text-white text-3xl fill-white absolute z-10">
+        {INT_TO_ARKHAM[sanity || 'none'] || sanity}
+      </span>
+    </span>
+  );
+};
+
 const ActionButton = ({
   name,
   component,
@@ -135,23 +188,21 @@ const Card = ({
   return (
     <article
       className={classNames(
-        `flex flex-col items-center justify-center bg-${card.faction_code} rounded-lg w-96`,
+        `flex flex-col items-center justify-center bg-${card.faction_code} rounded-lg w-96 text-gray-200 border border-${card.faction_code}`,
         className
       )}
     >
       <header
-        className={`flex flex-row justify-between items-center text-white w-full py-2 px-2`}
+        className={`flex flex-row justify-between items-center text-white w-full`}
       >
-        <span className="w-6 h-6 rounded-full border-white border-solid border flex justify-center items-center">
+        <span className="w-8 h-8 rounded-full border-white border-solid border flex justify-center items-center ml-1 mt-1">
           {(card as any)['cost'] || '-'}
         </span>
-        <span className="font-bold text-xl">{card.name}</span>
+        <span className="font-bold text-xl text-gray-200">{card.name}</span>
         <span></span>
       </header>
-      <section className={`p-2 w-full`}>
-        <div
-          className={`bg-yellow-50 border border-${card.faction_code} rounded-sm p-2 relative`}
-        >
+      <section className={`mt-2 w-full`}>
+        <div className={`bg-slate-800 p-2 relative text-gray-100 rounded-md`}>
           <header className="min-h-24">
             <p className="font-bold">
               {t(card.type_code)}
@@ -162,22 +213,22 @@ const Card = ({
             </p>
             <p className="flex space-x-1">
               {times(card.skill_willpower || 0, () => (
-                <IconContainer>
+                <IconContainer className="bg-blue-600">
                   <WillpowerIcon />
                 </IconContainer>
               ))}
               {times(card.skill_intellect || 0, () => (
-                <IconContainer>
+                <IconContainer className="bg-yellow-600">
                   <IntellectIcon />
                 </IconContainer>
               ))}
               {times(card.skill_combat || 0, () => (
-                <IconContainer>
+                <IconContainer className="bg-red-600">
                   <CombatIcon />
                 </IconContainer>
               ))}
               {times(card.skill_agility || 0, () => (
-                <IconContainer>
+                <IconContainer className="bg-green-600">
                   <AgilityIcon />
                 </IconContainer>
               ))}
@@ -185,21 +236,29 @@ const Card = ({
           </header>
           <p>{replaceIconsInText(card.text)}</p>
           {card.imagesrc && (
-            <span className="absolute top-1 right-1">
+            <span className="absolute top-2 right-2">
               <Image
                 src={`https://fr.arkhamdb.com${card.imagesrc}`}
                 alt={card.name}
                 width={1500}
                 height={2000}
-                className="object-cover w-20 h-20 object-top"
+                className="object-cover w-20 h-20 object-top rounded"
                 fill={false}
               />
             </span>
           )}
+          {card.type_code === 'asset' && (card.health || card.sanity) && (
+            <p className="flex justify-center space-x-2 mt-4">
+              <HealthIcon health={card.health} />
+              <SanityIcon sanity={card.sanity} />
+            </p>
+          )}
         </div>
       </section>
       {actions && (
-        <footer className="border-t border-solid border-gray-600 w-full py-1 mt-2">
+        <footer
+          className={`border-t border-solid border-${card.faction_code} w-full py-1`}
+        >
           <ul className="flex">
             {actions.map((action) => (
               <li key={action.name}>

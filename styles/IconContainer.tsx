@@ -1,8 +1,20 @@
+import classNames from '@/helpers/classNames';
 import React, { ReactNode } from 'react';
 
-const IconContainer = ({ children }: { children: ReactNode }) => {
+const IconContainer = ({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) => {
   return (
-    <span className="w-7 h-7 bg-slate-300 text-lg flex justify-center bg-opacity-80 rounded-lg items-center">
+    <span
+      className={classNames(
+        'w-7 h-7 text-lg flex justify-center rounded-lg items-center text-gray-100 bg-opacity-40',
+        className
+      )}
+    >
       {children}
     </span>
   );

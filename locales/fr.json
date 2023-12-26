@@ -1,5 +1,20 @@
 {
   "event": "Événement",
   "skill": "Compétence",
-  "asset": "Soutien"
+  "asset": "Soutien",
+  "traits": {
+    "Item": "Objet",
+    "Armor": "Armure",
+    "Relic": "Relique",
+    "Weapon": "Arme",
+    "Spell": "Sort",
+    "Ally": "Allié",
+    "Blessing": "Bénédiction"
+  },
+  "slots": {
+    "Body": "Corps",
+    "Arcane": "Arcane",
+    "Hand": "Main",
+    "Accessory": "Accessoire"
+  }
 }

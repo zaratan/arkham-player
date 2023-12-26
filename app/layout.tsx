@@ -10,6 +10,11 @@ const arkhamFont = locafFont({
   variable: '--arkham',
 });
 
+const cardFont = locafFont({
+  src: '../fonts/cardicons.ttf',
+  variable: '--card',
+});
+
 export const metadata: Metadata = {
   title: 'Arkham Player',
   description: 'Try your Arkham deck',
@@ -22,7 +27,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <body className={`${inter.variable} ${arkhamFont.variable} font-sans`}>
+      <body
+        className={`${inter.variable} ${arkhamFont.variable} ${cardFont.variable} font-sans bg-slate-800 text-gray-200`}
+      >
         <NeededCssClasses />
         {children}
       </body>
